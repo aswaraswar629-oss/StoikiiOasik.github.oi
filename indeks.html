@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kilas Kimia: Petualangan Stoikiometri Kelas X</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0284c7', // Sky Blue 600
+                        primaryLight: '#e0f2fe', // Sky Blue 100
+                        primaryDark: '#0369a1', // Sky Blue 700
+                        accent: '#f97316', // Orange 500
+                        accentLight: '#ffedd5', // Orange 100
+                        success: '#10b981', // Emerald 500
+                        warning: '#f59e0b', // Amber 500
+                        danger: '#ef4444', // Red 500
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(224, 242, 254, 0.5);
+        }
+        .page-view {
+            display: none;
+        }
+        .page-view.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-sky-50 via-blue-50 to-orange-50 font-sans text-slate-700 min-h-screen flex flex-col justify-between selection:bg-accent selection:text-white">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-sky-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-primary to-accent rounded-2xl flex items-center justify-center text-white shadow-md shadow-sky-200">
+                        <i class="fa-solid fa-atom text-2xl animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-accent">Kimia SMA</span>
+                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-tight">Stoiki<span class="text-primary">O</span><span>asik!</span></h1>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="switchPage('home')" id="nav-btn-home" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-sky-50 transition">Home</button>
+                    <button onclick="switchPage('materi')" id="nav-btn-materi" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-primary hover:bg-sky-50 transition">Materi</button>
+                    <button onclick="switchPage('simulasi')" id="nav-btn-simulasi" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-primary hover:bg-sky-50 transition">Simulasi</button>
+                    <button onclick="switchPage('latihan')" id="nav-btn-latihan" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-primary hover:bg-sky-50 transition">Latihan</button>
+                    <button onclick="switchPage('kuis')" id="nav-btn-kuis" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-primary hover:bg-sky-50 transition">Kuis</button>
+                    <button onclick="switchPage('ringkasan')" id="nav-btn-ringkasan" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-primary hover:bg-sky-50 transition">Ringkasan</button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="menu-btn" class="p-2 rounded-xl text-slate-600 hover:text-primary hover:bg-sky-50 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-sky-100 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <button onclick="switchPage('home'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-primary bg-sky-50">Home</button>
+            <button onclick="switchPage('materi'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-slate-600 hover:bg-sky-50 hover:text-primary">Materi</button>
+            <button onclick="switchPage('simulasi'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-slate-600 hover:bg-sky-50 hover:text-primary">Simulasi</button>
+            <button onclick="switchPage('latihan'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-slate-600 hover:bg-sky-50 hover:text-primary">Latihan</button>
+            <button onclick="switchPage('kuis'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-slate-600 hover:bg-sky-50 hover:text-primary">Kuis</button>
+            <button onclick="switchPage('ringkasan'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-xl text-base font-medium text-slate-600 hover:bg-sky-50 hover:text-primary">Ringkasan</button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-view active py-12 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-orange-100 text-accent px-4 py-2 rounded-full text-xs font-bold tracking-wide uppercase">
+                        <i class="fa-solid fa-bolt"></i> Belajar Kimia Jadi Seru & Mudah!
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-800 leading-tight">
+                        Kuasai Rahasia <span class="text-primary underline decoration-accent decoration-wavy">Stoikiometri</span> Tanpa Ribet
+                    </h2>
+                    <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+                        Stoikiometri itu ibarat resep kue rahasia para kimiawan. Temukan cara asyik menghitung mol, massa zat, dan koefisien reaksi kimia dengan kalkulator interaktif dan kuis menantang!
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-2">
+                        <button onclick="switchPage('materi')" class="bg-primary hover:bg-primaryDark text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-sky-200 transition transform hover:-translate-y-1 text-center cursor-pointer">
+                            <i class="fa-solid fa-book-open mr-2"></i> Mulai Belajar
+                        </button>
+                        <button onclick="switchPage('simulasi')" class="bg-accent hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-orange-200 transition transform hover:-translate-y-1 text-center cursor-pointer">
+                            <i class="fa-solid fa-calculator mr-2"></i> Coba Kalkulator Mol
+                        </button>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-br from-primaryLight to-orange-100 rounded-3xl shadow-2xl flex items-center justify-center p-8 animate-float">
+                        <div class="absolute -top-4 -right-4 bg-white p-4 rounded-2xl shadow-lg flex items-center gap-3">
+                            <div class="w-10 h-10 bg-success/20 text-success rounded-xl flex items-center justify-center font-bold">H<sub>2</sub>O</div>
+                            <span class="text-xs font-bold text-slate-700">Hukum Kekekalan Massa</span>
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 bg-white p-4 rounded-2xl shadow-lg flex items-center gap-3">
+                            <div class="w-10 h-10 bg-accent/20 text-accent rounded-xl flex items-center justify-center font-bold">mol</div>
+                            <span class="text-xs font-bold text-slate-700">Jembatan Mol Mantap</span>
+                        </div>
+                        <i class="fa-solid fa-flask-vial text-primary text-8xl sm:text-9xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Intro Card -->
+            <div class="mt-16 bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 bg-sky-100 text-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">01</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Apa itu Stoikiometri?</h3>
+                        <p class="text-sm text-slate-600 mt-1">Ilmu yang mempelajari kuantitas hubungan massa, mol, dan volume antar zat dalam reaksi kimia.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 bg-orange-100 text-accent rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">02</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Mengapa Penting?</h3>
+                        <p class="text-sm text-slate-600 mt-1">Digunakan industri obat, pabrik makanan, hingga peracikan bahan bakar roket agar tidak boros dan aman.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 bg-emerald-100 text-success rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 font-bold">03</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Konsep Kunci</h3>
+                        <p class="text-sm text-slate-600 mt-1">Berpusat pada "Konsep Mol" sebagai satuan jumlah zat penghubung segala perhitungan kimia.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: MATERI ================= -->
+        <section id="page-materi" class="page-view py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-primary font-bold text-sm tracking-wider uppercase bg-primaryLight px-4 py-1.5 rounded-full">Eksplorasi Materi</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-3">Pilih Topik Pembelajaran</h2>
+                <p class="text-slate-600 mt-2">Klik tombol topik di bawah untuk membuka penjelasan interaktif langkah demi langkah dan video pembelajaran.</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8">
+                <button onclick="switchTab(1)" id="tab-btn-1" class="tab-btn px-5 py-3 rounded-2xl font-bold text-sm transition shadow-sm bg-primary text-white flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-scale-balanced"></i> 1. Hukum Dasar Kimia
+                </button>
+                <button onclick="switchTab(2)" id="tab-btn-2" class="tab-btn px-5 py-3 rounded-2xl font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-sky-50 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-cube"></i> 2. Konsep Mol & Massa Molar
+                </button>
+                <button onclick="switchTab(3)" id="tab-btn-3" class="tab-btn px-5 py-3 rounded-2xl font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-sky-50 flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-fire-burner"></i> 3. Stoikiometri Reaksi
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-sky-100">
+                <!-- Tab 1 -->
+                <div id="tab-content-1" class="tab-content space-y-6">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/2 space-y-4">
+                            <span class="bg-sky-100 text-primary font-bold text-xs px-3 py-1 rounded-full">Hukum Dasar Kimia</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Hukum Kekekalan Massa (Lavoisier)</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                "Massa total zat-zat sebelum reaksi adalah sama dengan massa total zat-zat sesudah reaksi." Artinya, dalam sistem tertutup, atom-atom tidak diciptakan atau dimusnahkan, melainkan hanya disusun ulang!
+                            </p>
+                            <div class="bg-sky-50 p-4 rounded-2xl border-l-4 border-primary">
+                                <p class="text-sm font-semibold text-slate-700">Contoh:</p>
+                                <p class="text-sm text-slate-600 mt-1">2 gram Hidrogen + 16 gram Oksigen menghasilkan tepat 18 gram Air (H<sub>2</sub>O).</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 bg-sky-50 rounded-2xl p-6 text-center">
+                            <i class="fa-solid fa-balance-scale text-primary text-6xl mb-3"></i>
+                            <h4 class="font-bold text-slate-800">Massa Sebelum = Massa Sesudah</h4>
+                            <p class="text-xs text-slate-600 mt-2">Zat Pereaksi = Zat Hasil Reaksi</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Pembelajaran Tab 1 -->
+                    <div class="mt-8 pt-6 border-t border-sky-100">
+                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-600 text-xl"></i> Video Pembelajaran: Hukum Dasar Kimia
+                        </h4>
+                        <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-sky-100 bg-slate-900">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/3ilsbGGfQxs" title="Video Hukum Dasar Kimia" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2 -->
+                <div id="tab-content-2" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/2 space-y-4">
+                            <span class="bg-orange-100 text-accent font-bold text-xs px-3 py-1 rounded-full">Jembatan Mol</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Apa itu Mol (n) dan Massa Molar?</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Mol adalah satuan jumlah zat dalam kimia. Satu mol zat mengandung tepat 6,02 &times; 10<sup>23</sup> partikel (dikenal sebagai Bilangan Avogadro, N<sub>A</sub>).
+                            </p>
+                            <div class="bg-orange-50 p-4 rounded-2xl border-l-4 border-accent space-y-2">
+                                <p class="text-sm font-bold text-slate-800">Rumus Sakti Mol (n):</p>
+                                <p class="text-sm text-slate-700">1. Dari Massa: n = Massa (gram) / Massa Molar (Ar atau Mr)</p>
+                                <p class="text-sm text-slate-700">2. Dari Partikel: n = Jumlah Partikel / (6,02 &times; 10<sup>23</sup>)</p>
+                                <p class="text-sm text-slate-700">3. Dari Volume Gas (STP): n = Volume (L) / 22,4</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 bg-orange-50 rounded-2xl p-6 text-center">
+                            <i class="fa-solid fa-cubes text-accent text-6xl mb-3"></i>
+                            <h4 class="font-bold text-slate-800">Pusat Segala Perhitungan Kimia</h4>
+                            <p class="text-xs text-slate-600 mt-2">Semua satuan wajib diubah ke mol terlebih dahulu!</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Pembelajaran Tab 2 -->
+                    <div class="mt-8 pt-6 border-t border-sky-100">
+                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-600 text-xl"></i> Video Pembelajaran: Konsep Mol & Stoikiometri (Bagian 1)
+                        </h4>
+                        <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-sky-100 bg-slate-900">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/GMBYezA0t_8" title="Video Konsep Mol 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3 -->
+                <div id="tab-content-3" class="tab-content hidden space-y-6">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/2 space-y-4">
+                            <span class="bg-emerald-100 text-success font-bold text-xs px-3 py-1 rounded-full">Perhitungan Reaksi</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Stoikiometri Reaksi & Koefisien</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Koefisien reaksi dalam persamaan kimia yang setara menyatakan perbandingan mol zat-zat yang bereaksi dan hasil reaksi.
+                            </p>
+                            <div class="bg-emerald-50 p-4 rounded-2xl border-l-4 border-success">
+                                <p class="text-sm font-bold text-slate-800">Langkah Mengerjakan:</p>
+                                <p class="text-sm text-slate-600 mt-1">1. Tulis persamaan reaksi dan setarakan koefisiennya.<br>2. Ubah data soal ke dalam satuan Mol.<br>3. Gunakan perbandingan koefisien: Mol Ditanya = (Koefisien Ditanya / Koefisien Diketahui) &times; Mol Diketahui</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 bg-emerald-50 rounded-2xl p-6 text-center">
+                            <i class="fa-solid fa-fire-burner text-success text-6xl mb-3"></i>
+                            <h4 class="font-bold text-slate-800">Perbandingan Koefisien = Perbandingan Mol</h4>
+                            <p class="text-xs text-slate-600 mt-2">Kunci sukses menyelesaikan soal reaksi kimia.</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Pembelajaran Tab 3 -->
+                    <div class="mt-8 pt-6 border-t border-sky-100">
+                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-600 text-xl"></i> Video Pembelajaran: Konsep Mol & Stoikiometri (Bagian 2)
+                        </h4>
+                        <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md border border-sky-100 bg-slate-900">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/OrPTznxYvx8" title="Video Konsep Mol 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: SIMULASI / KALKULATOR ================= -->
+        <section id="page-simulasi" class="page-view py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-accent font-bold text-sm tracking-wider uppercase bg-orange-100 px-4 py-1.5 rounded-full">Laboratorium Virtual</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-3">Kalkulator Konversi Mol</h2>
+                <p class="text-slate-600 mt-2">Hitung jumlah mol dan partikel zat secara instan berdasarkan massa gram dan Mr.</p>
+            </div>
+
+            <div class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-sky-100 space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Zat atau Senyawa:</label>
+                    <select id="calc-substance" onchange="updateMolarMass()" class="w-full px-4 py-3 rounded-xl border border-sky-200 focus:outline-none focus:ring-2 focus:ring-primary text-sm bg-sky-50">
+                        <option value="18">Air (H2O) - Mr = 18</option>
+                        <option value="44">Karbon Dioksida (CO2) - Mr = 44</option>
+                        <option value="58.5">Garam Dapur (NaCl) - Mr = 58,5</option>
+                        <option value="36.5">Asam Klorida (HCl) - Mr = 36,5</option>
+                        <option value="custom">Senyawa Lain (Manual Mr)...</option>
+                    </select>
+                </div>
+
+                <div id="custom-mr-container" class="hidden">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Masukkan Massa Molar (Mr atau Ar):</label>
+                    <input type="number" id="calc-custom-mr" placeholder="Contoh: 60" class="w-full px-4 py-3 rounded-xl border border-sky-200 focus:outline-none focus:ring-2 focus:ring-primary text-sm bg-sky-50">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Massa Zat (gram):</label>
+                    <input type="number" id="calc-mass" placeholder="Contoh: 90" class="w-full px-4 py-3 rounded-xl border border-sky-200 focus:outline-none focus:ring-2 focus:ring-primary text-sm bg-sky-50">
+                </div>
+
+                <button onclick="calculateMol()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg shadow-sky-200 transition cursor-pointer">
+                    <i class="fa-solid fa-calculator mr-2"></i> Hitung Mol & Jumlah Partikel
+                </button>
+
+                <div id="calc-result" class="hidden bg-sky-50 p-6 rounded-2xl border border-sky-200 space-y-3">
+                    <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-square-poll-vertical text-primary mr-2"></i> Hasil Perhitungan:</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100">
+                            <span class="text-xs text-slate-500 font-semibold">Jumlah Mol (n):</span>
+                            <div id="res-mol" class="text-xl font-extrabold text-primary mt-1">0 mol</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100">
+                            <span class="text-xs text-slate-500 font-semibold">Jumlah Partikel:</span>
+                            <div id="res-particles" class="text-xl font-extrabold text-accent mt-1">0 partikel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: LATIHAN SOAL ================= -->
+        <section id="page-latihan" class="page-view py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-primary font-bold text-sm tracking-wider uppercase bg-primaryLight px-4 py-1.5 rounded-full">Latihan Mandiri</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-3">Asah Kemampuanmu</h2>
+                <p class="text-slate-600 mt-2">Jawab 5 soal latihan di bawah ini dan dapatkan umpan balik instan beserta tanda warna yang jelas!</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-8">
+                <!-- Soal 1 -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-sky-100 text-primary font-bold text-xs px-3 py-1 rounded-full">Soal Latihan 1</span>
+                        <span class="text-xs text-slate-500 font-semibold">Konsep Mol</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Berapakah jumlah mol dari 90 gram air (H<sub>2</sub>O)? (Diketahui Ar H = 1, O = 16)</h3>
+                    <div class="space-y-3" id="prac-1-options">
+                        <button onclick="checkPractice(1, 0, false)" class="prac-btn-1 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>A. 2 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(1, 1, true)" class="prac-btn-1 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>B. 5 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(1, 2, false)" class="prac-btn-1 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>C. 10 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                    <div id="prac-feedback-1" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+                </div>
+
+                <!-- Soal 2 -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-orange-100 text-accent font-bold text-xs px-3 py-1 rounded-full">Soal Latihan 2</span>
+                        <span class="text-xs text-slate-500 font-semibold">Hukum Dasar</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Jika 4 gram hidrogen bereaksi sempurna dengan oksigen menghasilkan 36 gram air, berapa massa oksigen yang diperlukan?</h3>
+                    <div class="space-y-3" id="prac-2-options">
+                        <button onclick="checkPractice(2, 0, false)" class="prac-btn-2 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>A. 16 gram</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(2, 1, false)" class="prac-btn-2 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>B. 24 gram</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(2, 2, true)" class="prac-btn-2 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>C. 32 gram</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                    <div id="prac-feedback-2" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+                </div>
+
+                <!-- Soal 3 -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-emerald-100 text-success font-bold text-xs px-3 py-1 rounded-full">Soal Latihan 3</span>
+                        <span class="text-xs text-slate-500 font-semibold">Jumlah Partikel</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Berapakah jumlah partikel yang terdapat dalam 0,5 mol gas Karbon Dioksida (CO<sub>2</sub>)?</h3>
+                    <div class="space-y-3" id="prac-3-options">
+                        <button onclick="checkPractice(3, 0, true)" class="prac-btn-3 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>A. 3,01 &times; 10<sup>23</sup> molekul</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(3, 1, false)" class="prac-btn-3 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>B. 6,02 &times; 10<sup>23</sup> molekul</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(3, 2, false)" class="prac-btn-3 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>C. 1,204 &times; 10<sup>24</sup> molekul</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                    <div id="prac-feedback-3" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+                </div>
+
+                <!-- Soal 4 -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-primaryLight text-primary font-bold text-xs px-3 py-1 rounded-full">Soal Latihan 4</span>
+                        <span class="text-xs text-slate-500 font-semibold">Volume Gas (STP)</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Berapakah volume dari 2 mol gas Oksigen (O<sub>2</sub>) pada keadaan standar (STP)?</h3>
+                    <div class="space-y-3" id="prac-4-options">
+                        <button onclick="checkPractice(4, 0, false)" class="prac-btn-4 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>A. 11,2 Liter</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(4, 1, false)" class="prac-btn-4 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>B. 22,4 Liter</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(4, 2, true)" class="prac-btn-4 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>C. 44,8 Liter</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                    <div id="prac-feedback-4" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+                </div>
+
+                <!-- Soal 5 -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-orange-100 text-accent font-bold text-xs px-3 py-1 rounded-full">Soal Latihan 5</span>
+                        <span class="text-xs text-slate-500 font-semibold">Koefisien Reaksi</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Dalam reaksi: N<sub>2</sub> + 3H<sub>2</sub> &rarr; 2NH<sub>3</sub>, jika tersedia 4 mol gas H<sub>2</sub>, berapa mol NH<sub>3</sub> yang terbentuk?</h3>
+                    <div class="space-y-3" id="prac-5-options">
+                        <button onclick="checkPractice(5, 0, true)" class="prac-btn-5 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>A. 2,67 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(5, 1, false)" class="prac-btn-5 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>B. 4 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                        <button onclick="checkPractice(5, 2, false)" class="prac-btn-5 w-full text-left p-4 rounded-2xl border border-sky-100 hover:bg-sky-50 font-medium text-slate-700 transition flex items-center justify-between cursor-pointer">
+                            <span>C. 8 mol</span> <i class="fa-regular fa-circle text-slate-300"></i>
+                        </button>
+                    </div>
+                    <div id="prac-feedback-5" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: KUIS (GOOGLE FORMS) ================= -->
+        <section id="page-kuis" class="page-view py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-8">
+                <span class="text-accent font-bold text-sm tracking-wider uppercase bg-orange-100 px-4 py-1.5 rounded-full"><i class="fa-solid fa-file-lines mr-1"></i> Evaluasi Pembelajaran</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-3">Kuis Online Stoikiometri</h2>
+                <p class="text-slate-600 mt-2">Kerjakan kuis resmi di bawah ini untuk menguji pemahaman stoikiometri kamu secara menyeluruh!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-sky-100 space-y-6">
+                <div class="flex flex-col sm:flex-row items-center justify-between bg-sky-50 p-4 rounded-2xl gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-md">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Google Forms Kuis StoikiOasik</h4>
+                            <p class="text-xs text-slate-500">Pastikan mengisi nama dan kelas dengan lengkap ya!</p>
+                        </div>
+                    </div>
+                    <a href="https://forms.gle/ZxRcQKA75Jfjh9FG8" target="_blank" class="bg-accent hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-external-link-alt"></i> Buka di Tab Baru
+                    </a>
+                </div>
+
+                <!-- Embedded Google Form -->
+                <div class="w-full h-[650px] rounded-2xl overflow-hidden border border-sky-100 bg-sky-50/50">
+                    <iframe src="https://forms.gle/ZxRcQKA75Jfjh9FG8" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" class="w-full h-full">Memuat...</iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 6: RINGKASAN & TIPS ================= -->
+        <section id="page-ringkasan" class="page-view py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-primary font-bold text-sm tracking-wider uppercase bg-primaryLight px-4 py-1.5 rounded-full">Catatan Penting</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-3">Ringkasan & Tips Anti-Pusing</h2>
+                <p class="text-slate-600 mt-2">Kumpulan rumus kilat dan trik jitu mengerjakan soal stoikiometri SMA Kelas X.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Summary Card -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100 space-y-4">
+                    <div class="w-12 h-12 bg-sky-100 text-primary rounded-2xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-bookmark"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800">Rumus Saku Stoikiometri</h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="bg-sky-50 p-3 rounded-xl"><strong>Mol dari Massa:</strong> n = gram / Mr</li>
+                        <li class="bg-sky-50 p-3 rounded-xl"><strong>Mol dari Partikel:</strong> n = Partikel / (6,02 &times; 10<sup>23</sup>)</li>
+                        <li class="bg-sky-50 p-3 rounded-xl"><strong>Mol dari Volume STP:</strong> n = Volume (L) / 22,4</li>
+                        <li class="bg-sky-50 p-3 rounded-xl"><strong>Rumus Reaksi:</strong> Mol<sub>x</sub> = (Koef<sub>x</sub> / Koef<sub>y</sub>) &times; Mol<sub>y</sub></li>
+                    </ul>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-sky-100 space-y-4">
+                    <div class="w-12 h-12 bg-orange-100 text-accent rounded-2xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800">Tips Jitu Mengerjakan Soal</h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="bg-orange-50 p-3 rounded-xl"><strong>1. Jangan lupa setarakan reaksi!</strong> Selalu cek apakah koefisien kiri dan kanan sudah seimbang sebelum menghitung.</li>
+                        <li class="bg-orange-50 p-3 rounded-xl"><strong>2. Jadikan Mol sebagai pusat.</strong> Apapun data yang diketahui di soal (gram, liter, jumlah partikel), ubah dulu ke mol!</li>
+                        <li class="bg-orange-50 p-3 rounded-xl"><strong>3. Teliti satuan Mr/Ar.</strong> Perhatikan kembali tabel periodik jika diperlukan nilai Ar atom.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-primary to-accent rounded-xl flex items-center justify-center text-white">
+                    <i class="fa-solid fa-atom"></i>
+                </div>
+                <h3 class="text-xl font-bold tracking-tight">Stoiki<span class="text-primary">O</span><span>asik!</span></h3>
+            </div>
+            <p class="text-slate-400 text-sm max-w-md mx-auto">Media Pembelajaran Interaktif Stoikiometri Berbasis Web untuk Siswa SMA, Belajar kimia jadi lebih menyenangkan.</p>
+            <p class="text-slate-500 text-xs pt-4">&copy; 2026 StoikiOasik. Dibuat khusus untuk pendidikan kimia modern.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Multi-page Switching Logic
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show selected page
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            // Reset navigation button active states
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-50', 'text-primary', 'font-semibold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+
+            // Highlight current nav button if applicable
+            const activeBtn = document.getElementById(`nav-btn-${pageId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'font-medium');
+                activeBtn.classList.add('bg-sky-50', 'text-primary', 'font-semibold');
+            }
+
+            // Scroll to top of window
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        // Interactive Theory Tabs
+        function switchTab(tabNumber) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            // Reset all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-sky-50');
+            });
+
+            // Show selected tab content
+            document.getElementById(`tab-content-${tabNumber}`).classList.remove('hidden');
+            // Highlight selected tab button
+            const activeBtn = document.getElementById(`tab-btn-${tabNumber}`);
+            activeBtn.classList.remove('bg-white', 'text-slate-600', 'hover:bg-sky-50');
+            activeBtn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+        }
+
+        // Calculator Logic
+        function updateMolarMass() {
+            const select = document.getElementById('calc-substance');
+            const customContainer = document.getElementById('custom-mr-container');
+            const customMrInput = document.getElementById('calc-custom-mr');
+
+            if (select.value === 'custom') {
+                customContainer.classList.remove('hidden');
+            } else {
+                customContainer.classList.add('hidden');
+                customMrInput.value = select.value;
+            }
+        }
+
+        function calculateMol() {
+            const select = document.getElementById('calc-substance');
+            let mr = parseFloat(select.value);
+            if (select.value === 'custom') {
+                mr = parseFloat(document.getElementById('calc-custom-mr').value);
+            }
+
+            const mass = parseFloat(document.getElementById('calc-mass').value);
+
+            if (isNaN(mr) || isNaN(mass) || mr <= 0 || mass <= 0) {
+                alert('Mohon masukkan nilai massa dan massa molar yang valid!');
+                return;
+            }
+
+            const mol = mass / mr;
+            const particles = mol * 6.023e23;
+
+            document.getElementById('res-mol').innerText = mol.toFixed(4) + ' mol';
+            document.getElementById('res-particles').innerText = particles.toExponential(3) + ' partikel';
+            document.getElementById('calc-result').classList.remove('hidden');
+        }
+
+        // Practice Exercises Logic with Instant Visual Check & Highlighting
+        const practiceAnswers = {
+            1: 1, // B (5 mol)
+            2: 2, // C (32 gram)
+            3: 0, // A (3.01 x 10^23)
+            4: 2, // C (44.8 L)
+            5: 0  // A (2.67 mol)
+        };
+
+        const practiceExplanations = {
+            1: "Penjelasan: Mol = Massa / Mr = 90 / 18 = 5 mol.",
+            2: "Penjelasan: Massa Oksigen = Massa Air - Massa Hidrogen = 36 - 4 = 32 gram.",
+            3: "Penjelasan: Jumlah Partikel = Mol x Bilangan Avogadro = 0.5 x 6.02 x 10^23 = 3.01 x 10^23 molekul.",
+            4: "Penjelasan: Volume STP = Mol x 22.4 = 2 x 22.4 = 44.8 Liter.",
+            5: "Penjelasan: Mol NH3 = (Koef NH3 / Koef H2) x Mol H2 = (2 / 3) x 4 = 2.67 mol."
+        };
+
+        function checkPractice(questionNo, selectedIndex, isCorrect) {
+            const buttons = document.querySelectorAll(`.prac-btn-${questionNo}`);
+            const feedbackBox = document.getElementById(`prac-feedback-${questionNo}`);
+            const correctIndex = practiceAnswers[questionNo];
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-sky-50', 'cursor-pointer');
+                
+                const icon = btn.querySelector('i');
+                if (idx === correctIndex) {
+                    btn.className = "w-full text-left p-4 rounded-2xl border border-emerald-300 bg-emerald-50 font-semibold text-success flex items-center justify-between";
+                    icon.className = "fa-solid fa-circle-check text-success";
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-2xl border border-red-300 bg-red-50 font-semibold text-danger flex items-center justify-between";
+                    icon.className = "fa-solid fa-circle-xmark text-danger";
+                } else {
+                    btn.className = "w-full text-left p-4 rounded-2xl border border-sky-100 opacity-60 font-medium text-slate-500 flex items-center justify-between";
+                }
+            });
+
+            if (isCorrect) {
+                feedbackBox.className = "mt-4 p-4 rounded-2xl text-sm bg-emerald-50 text-success border border-emerald-200 font-semibold";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Jawaban Benar! ${practiceExplanations[questionNo]}`;
+            } else {
+                feedbackBox.className = "mt-4 p-4 rounded-2xl text-sm bg-red-50 text-danger border border-red-200 font-semibold";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Kurang tepat. ${practiceExplanations[questionNo]}`;
+            }
+            feedbackBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
